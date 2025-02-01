@@ -737,5 +737,187 @@ source ~/.bashrc
 🔹 **Manifest.in** – Lists files to include/exclude in packages.  
 🔹 **Setup.py** – Used to build Python packages.  
 
+Chapter 5: 
+# MLflow: Platform to Manage the ML Life Cycle
+
+## Introduction
+The Machine Learning (ML) life cycle presents various challenges, such as tracking multiple models with different parameters and hyperparameters, managing model versions, and deploying the best-performing models. MLflow is an open-source platform designed to streamline machine learning development by tracking experiments, packaging reproducible runs, and deploying models efficiently.
+
+## Structure
+This chapter covers the following key aspects of MLflow:
+- Introduction to MLflow
+- MLflow tracking
+- MLflow projects
+- MLflow models
+- MLflow model registry
+
+## Objectives
+After studying this chapter, you will be able to:
+- Train, reuse, and deploy ML models using MLflow.
+- Track model evaluation metrics and parameters.
+- Pickle trained models and compare different models in the MLflow UI.
+- Select the best-performing iteration using MLflow UI or CLI.
+
+## Introduction to MLflow
+MLflow helps in managing the entire ML life cycle, enabling tracking of multiple models and their evaluation metrics. It allows saving trained models with optimal hyperparameters and deploying them efficiently.
+
+### Key Features of MLflow:
+- **Library-agnostic:** Compatible with different ML libraries.
+- **Multiple Interfaces:** Access via REST API and CLI.
+- **Easy Integration:** Requires minimal changes to existing code.
+- **Experiment Tracking:** Keeps records of all model runs.
+- **Supports Multiple Backends:** Stores logs in local directories, databases like MySQL, or cloud services.
+
+## Setting Up MLflow
+### Install Miniconda (Skip if Anaconda is Installed)
+Download Miniconda from:
+```
+https://docs.conda.io/en/latest/miniconda.html#linux-installers
+```
+Or run:
+```
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+Verify installation:
+```
+conda list
+conda update conda  # Optional
+```
+
+### Creating a Virtual Environment
+```
+conda create -n venv python=3.7
+conda activate venv
+pip install mlflow
+```
+Check MLflow installation:
+```
+mlflow
+```
+To start MLflow UI:
+```
+mlflow ui
+```
+If the UI fails to start due to port issues:
+```
+sudo fuser -k 5000/tcp
+```
+
+## MLflow Components
+MLflow consists of four major components:
+1. **MLflow Tracking:** Logs parameters, metrics, and artifacts.
+2. **MLflow Projects:** Packages code for reproducibility.
+3. **MLflow Models:** Standardizes model packaging.
+4. **MLflow Model Registry:** Centralized model management.
+
+## MLflow Tracking
+MLflow tracking API allows logging experiments and results.
+
+### Key MLflow Tracking Functions:
+```python
+import mlflow
+mlflow.set_tracking_uri('http://localhost:5000')  # Set tracking server
+exp_id = mlflow.create_experiment("Loan_Prediction")  # Create experiment
+mlflow.set_experiment("Loan_Prediction")  # Set experiment
+
+with mlflow.start_run():
+    mlflow.log_param("n_estimators", 100)  # Log parameter
+    mlflow.log_metric("accuracy", 0.85)  # Log metric
+    mlflow.set_tag("model_version", "0.1.0")  # Set tag
+```
+
+## MLflow Projects
+MLflow Projects help package models for reproducibility. Create a `MLproject` file:
+```yaml
+name: Loan_prediction
+conda_env: conda.yaml
+entry_points:
+  main:
+    command: "python train.py"
+```
+Run MLflow project locally:
+```
+mlflow run .
+```
+Run from GitHub:
+```
+mlflow run https://github.com/user/mlflow_project --experiment-name Loan_prediction
+```
+
+## MLflow Models
+MLflow Models allow different formats for saving and serving models.
+
+### Saving a Model:
+```python
+import mlflow.sklearn
+mlflow.sklearn.log_model(model, "LogisticRegression")
+```
+A model directory structure is created:
+```
+LogisticRegression/
+├── conda.yaml
+├── MLmodel
+├── model.pkl
+└── requirements.txt
+```
+
+### Serving a Model via REST API:
+```
+mlflow models serve -m runs:/<RUN_ID>/model --port 1234
+```
+Send a prediction request:
+```
+curl -X POST -H "Content-Type: application/json" --data '{"data": [[1, 0, 0, 1, 0, 4.85, 360, 1, 2, 8.67]]}' http://127.0.0.1:1234/invocations
+```
+
+## MLflow Model Registry
+MLflow Model Registry tracks model versions and stages.
+
+### Registering a Model:
+1. Navigate to **MLflow UI** > **Experiment** > **Run ID** > **Register Model**.
+2. Assign a model name.
+3. Transition model to `Staging` or `Production`.
+
+### Deploying Registered Models:
+```python
+import mlflow.pyfunc
+model = mlflow.pyfunc.load_model("models:/Prediction_model_LR/Staging")
+model.predict([[1,1,0,1,0,4.55,360,1,2,8.25]])
+```
+
+## Conclusion
+MLflow is an essential tool for managing ML workflows. It allows tracking, packaging, and deploying ML models with ease. By integrating MLflow into ML projects, teams can improve collaboration, ensure model reproducibility, and streamline deployment.
+
+## Key Takeaways
+- **MLflow simplifies ML experimentation and deployment.**
+- **MLflow Tracking logs parameters, metrics, and artifacts.**
+- **MLflow Projects package dependencies and code for reproducibility.**
+- **MLflow Models allow serving ML models via REST API.**
+- **MLflow Registry manages model versions and transitions.**
+
+## Multiple Choice Questions
+1. Which of the following is NOT an MLflow component?
+   a) MLflow tracking  
+   b) MLflow develop  
+   c) MLflow models  
+   d) MLflow registry  
+   **Answer: b**
+
+2. How can model states be transitioned in MLflow Registry?
+   a) Using MLflow CLI  
+   b) Using MLflow UI  
+   c) Both a and b  
+   d) Model states cannot be changed  
+   **Answer: c**
+
+## Questions for Understanding
+1. What is MLflow?
+2. What is the role of the `conda.yaml` file?
+3. What is the command to serve a model using MLflow?
+
 ---
+This structured and colorful guide provides a **detailed yet digestible** approach to **MLflow's functionalities**. 🚀 Let me know if you'd like further enhancements!
+
+
 
