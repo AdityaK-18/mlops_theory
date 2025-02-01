@@ -533,3 +533,209 @@ The **ML lifecycle** involves **multiple stages**:
 This structured **short notes + Q&A format** is perfect for interviews. Let me know if you need any modifications! 🚀
 
 Chapter 4:
+
+# Packaging ML Models
+
+## **Introduction**
+Machine Learning (ML) models need to be packaged efficiently to ensure easy deployment, maintainability, and reusability. This chapter covers the essential steps to modularize Python code and build ML packages that can be installed and used on other machines or servers.
+
+---
+## **Structure**
+This chapter covers:
+- 🔹 **Virtual Environment**
+- 🔹 **Requirements File**
+- 🔹 **Serializing & Deserializing ML Models**
+- 🔹 **Testing Python Code using Pytest**
+- 🔹 **Python Packaging & Dependency Management**
+- 🔹 **Developing, Building, and Deploying ML Packages**
+- 🔹 **Setting Up Environment Variables and Paths**
+
+---
+## **Objectives**
+✅ Learn to create and activate virtual environments.
+✅ Install dependencies and package ML models.
+✅ Save trained ML models using pickling.
+✅ Test and debug Python packages using `pytest`.
+✅ Understand Python packaging and dependency management.
+
+---
+## **1️⃣ Virtual Environments**
+A **virtual environment** isolates dependencies for different projects. This is helpful when different projects require different versions of the same package.
+
+📌 **Install Virtual Environment:**  
+```sh
+pip install virtualenv
+```
+
+📌 **Create a Virtual Environment:**  
+```sh
+virtualenv venv_project
+```
+
+📌 **Activate Virtual Environment:**  
+```sh
+source venv_project/bin/activate  # Mac/Linux
+venv_project\Scripts\activate  # Windows
+```
+
+📌 **Deactivate Virtual Environment:**  
+```sh
+deactivate
+```
+
+📌 **List Installed Packages:**  
+```sh
+pip list  # OR
+pip freeze
+```
+
+---
+## **2️⃣ Requirements File**
+The `requirements.txt` file holds the list of dependencies required for a project.
+
+📌 **Generate a requirements file:**  
+```sh
+pip freeze > requirements.txt
+```
+
+📌 **Install dependencies from requirements file:**  
+```sh
+pip install -r requirements.txt
+```
+
+---
+## **3️⃣ Serializing & Deserializing ML Models**
+Serialization (pickling) allows saving ML models for reuse. **Joblib** is a popular library for this purpose.
+
+📌 **Install Joblib:**  
+```sh
+pip install joblib
+```
+
+📌 **Save ML Model:**  
+```python
+import joblib
+joblib.dump(model, 'model.pkl')
+```
+
+📌 **Load Saved Model:**  
+```python
+loaded_model = joblib.load('model.pkl')
+```
+
+---
+## **4️⃣ Testing Python Code with Pytest**
+Testing ensures that your package functions correctly before deployment.
+
+📌 **Install Pytest:**  
+```sh
+pip install pytest
+```
+
+📌 **Run Pytest:**  
+```sh
+pytest -v
+```
+
+📌 **Example Test Case:**  
+```python
+import pytest
+
+def test_sum():
+    assert sum([1, 2, 3]) == 6
+```
+
+📌 **Output Indicators:**  
+- ✅ `.` – Test Passed
+- ❌ `F` – Test Failed
+- ⚠️ `E` – Error Occurred
+
+---
+## **5️⃣ Python Packaging & Dependency Management**
+Modularizing Python code helps improve maintainability and reusability.
+
+📌 **Components of a Python Package:**
+- `module.py`: A Python file containing functions/classes.
+- `package/`: A directory with multiple modules.
+- `__init__.py`: Marks a directory as a package.
+
+📌 **Example Package Structure:**
+```
+📦 prediction_model/            # Root directory (ML Model Packaging)
+│── 📜 MANIFEST.in             # File manifest for package distribution
+│── 📖 README.md               # Documentation about the package
+│── 📜 requirements.txt        # List of dependencies for installation
+│── ⚙️ setup.py                 # Setup script for package installation
+│
+├── 📂 prediction_model/        # Main package directory
+│   ├── 📜 __init__.py          # Initializes this directory as a Python package
+│   ├── ⚙️ config.py             # Configuration settings, constants, and paths
+│   ├── 🔗 pipeline.py          # Defines the ML pipeline steps
+│   ├── 🔮 predict.py           # Loads the model and performs predictions
+│   │
+│   ├── 📂 processing/           # Data processing utilities
+│   │   ├── 🛠 data_management.py # Handles data loading, saving, and transformations
+│   │   ├── 🎭 preprocessors.py   # Custom preprocessing functions (encoding, scaling, imputation)
+│   │
+│   ├── 📂 trained_models/       # Folder for storing trained ML models
+│   │   ├── 🏆 model.pkl         # Serialized trained ML model (Pickle format)
+│   │
+│   ├── 🎯 train_pipeline.py     # Script to train the ML model and save it
+│
+└── 📂 tests/                    # Unit testing directory
+    ├── ⚙️ pytest.ini             # Pytest configuration file
+    ├── 🧪 test_predict.py       # Unit test cases for the prediction module
+
+```
+
+---
+## **6️⃣ Developing, Building, & Deploying ML Packages**
+### **Business Problem: Loan Approval Prediction**
+A company wants to automate loan eligibility based on customer details. The dataset includes factors like income, loan amount, credit history, etc.
+
+📌 **Steps to Build ML Package:**
+1. **Prepare dataset** (cleaning, processing, feature engineering).
+2. **Build and train model** (store trained model as `.pkl` file).
+3. **Package modules** (include `config.py`, `pipeline.py`, etc.).
+4. **Write test cases** (`pytest` for validation).
+5. **Create `setup.py` for installation.**
+
+📌 **Install Package Locally:**  
+```sh
+pip install -e .
+```
+
+📌 **Install from GitHub:**  
+```sh
+pip install git+https://github.com/username/repository.git
+```
+
+---
+## **7️⃣ Setting Up Environment Variables & Paths**
+Environment variables help in specifying paths dynamically.
+
+📌 **Add to `.bashrc` or `.bash_profile`:**  
+```sh
+echo "export PYTHONPATH=/home/user/project:$PYTHONPATH" >> ~/.bashrc
+source ~/.bashrc
+```
+
+---
+## **Conclusion**
+✔ Virtual environments help isolate dependencies.  
+✔ `requirements.txt` ensures consistency across machines.  
+✔ **Pickling & Joblib** allow saving ML models.  
+✔ `pytest` ensures robust testing before deployment.  
+✔ Modular programming improves **reusability** and **debugging**.  
+✔ Python packaging simplifies sharing ML models.  
+
+---
+## **Key Terms**
+🔹 **PYTHONPATH** – Specifies directories to be searched for Python modules.  
+🔹 **Joblib** – Used for model persistence.  
+🔹 **Pickling** – Saving Python objects as files.  
+🔹 **Manifest.in** – Lists files to include/exclude in packages.  
+🔹 **Setup.py** – Used to build Python packages.  
+
+---
+
